@@ -4,6 +4,7 @@ import { controller, httpGet, httpPost, httpPut, httpDelete, BaseHttpController,
 import { Types } from 'mongoose';
 import TYPES from '../constants/types';
 import ExerciseService from '../services/exercise.service';
+import { authMiddleware } from '../middleware/auth.middleware';
 
 @controller('/exercises')
 export default class ExerciseController extends BaseHttpController {
@@ -23,7 +24,7 @@ export default class ExerciseController extends BaseHttpController {
     }
   }
 
-  @httpPost('/')
+  @httpPost('/', authMiddleware)
   private createExercise(
     @request() req: Request,
   ) {
@@ -47,7 +48,7 @@ export default class ExerciseController extends BaseHttpController {
     }
   }
 
-  @httpPut('/:id')
+  @httpPut('/:id', authMiddleware)
   private updateExercise(
     @requestParam('id') id: Types.ObjectId,
     @request() req: Request,
@@ -55,7 +56,7 @@ export default class ExerciseController extends BaseHttpController {
     return this.exerciseService.updateExercise(id, req.body);
   }
 
-  @httpDelete('/:id')
+  @httpDelete('/:id', authMiddleware)
   private deleteExercise(
     @requestParam('id') id: Types.ObjectId,
   ) {
