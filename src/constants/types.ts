@@ -3,10 +3,12 @@ const TYPES = {
   User: Symbol.for('User'),
   UserService: Symbol.for('UserService'),
   Repositories: {
-    // Exercise: Symbol('ExerciseRepository'),
+    Exercise: Symbol('ExerciseRepository'),
+    Workout: Symbol('WorkoutRepository'),
   },
   Services: {
     Exercise: Symbol('ExerciseService'),
+    Workout: Symbol('WorkoutService'),
   },
 };
 

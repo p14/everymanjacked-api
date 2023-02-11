@@ -1,12 +1,12 @@
 import { BaseHttpController, controller, httpGet } from 'inversify-express-utils';
 
-@controller('/status-check')
+@controller('/api')
 export default class APIController extends BaseHttpController {
   constructor() {
     super();
   }
 
-  @httpGet('/')
+  @httpGet('/status-check')
   private statusCheck() {
     return this.ok('in Mae we trust');
   }

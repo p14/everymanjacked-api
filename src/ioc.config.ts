@@ -13,5 +13,6 @@ const container = new Container();
 // Services
 container.bind<Services.ExerciseService>(TYPES.Services.Exercise).to(Services.ExerciseService);
 container.bind<Services.UserService>(TYPES.UserService).to(Services.UserService);
+container.bind<Services.WorkoutService>(TYPES.Services.Workout).to(Services.WorkoutService);
 
 export default container;
