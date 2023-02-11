@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import TYPES from '../constants/types';
 import UserModel, { User } from '../models/user.model';
+import { hashPassword } from '../utils/helpers';
 
 dotenv.config();
 
@@ -18,14 +19,6 @@ export default class UserService {
     // this.userRepository = userRepository;
   }
 
-  // TODO: Put in helpers file in utils directory
-  static async hashPassword(password: string) {
-    const salt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS));
-    const hash = await bcrypt.hash(password, salt);
-    return hash;
-  };
-
-  // TODO: Put in helpers file in utils directory
   static async comparePassword(id: Types.ObjectId, password: string) {
     const user = await UserModel.findById(id, 'password');
     if (!user) {
@@ -34,37 +27,13 @@ export default class UserService {
     return bcrypt.compare(password, user.password);
   }
 
-  // TODO: Put into an Auth service of some sort
-  public async loginUser(username: string, password: string) {
-    const [user] = await UserModel.find({ username });
-    if (!user) {
-      throw new Error('User Not Found');
-    }
-  
-    const validPassword = await bcrypt.compare(password, user.password)
-    if (!validPassword) {
-      throw new Error('Invalid Password');
-    }
-  
-    const payload = user.toJSON();
-    const token = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 3600 });
-    const refresh = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 86400 });
-  
-    const AuthenticationResult = {
-      AccessToken: token,
-      RefreshToken: refresh,
-    };
-  
-    return { AuthenticationResult, user: payload };
-  }
-
   public async getUsers() {
     const users = await this.userRepository.find({}, '-password');
     return users;
   }
 
   public async createUser(newUser: User) {
-    const hash = await UserService.hashPassword(newUser.password);
+    const hash = await hashPassword(newUser.password);
     const data = await this.userRepository.create({ ...newUser, password: hash });
     const user = data.toJSON();
     return user;
@@ -79,9 +48,17 @@ export default class UserService {
     return user;
   }
 
+  public async getUserByUsername(username: string) {
+    const data = await this.userRepository.findOne({ username });
+    if (!data) {
+      throw new Error('User Not Found');
+    }
+    return data;
+  }
+
   public async updateUser(id: Types.ObjectId, updatedUser: User) {
     if (updatedUser.password) {
-      const hash = await UserService.hashPassword(updatedUser.password);
+      const hash = await hashPassword(updatedUser.password);
       updatedUser.password = hash;
     }
 
