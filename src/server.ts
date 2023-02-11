@@ -1,28 +1,25 @@
 import 'reflect-metadata';
-import { Container } from 'inversify';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import * as bodyParser from 'body-parser';
-import TYPES from './constant/types';
-import { UserService } from './service/user';
-import './controller/home';
-import './controller/user';
+import cors from 'cors';
+import { corsOptions } from './constants/config';
+import container from './ioc.config';
+import dbConnect from './utils/dbConnector';
+// import './controllers/_controllers';
 
 const PORT = process.env.PORT || 8000;
 
-// load everything needed to the Container
-const container = new Container();
-
-container.bind<UserService>(TYPES.UserService).to(UserService);
-
-// start the server
+// Start the server
 const server = new InversifyExpressServer(container);
 
 server.setConfig((app) => {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
+  app.use(cors(corsOptions));
 });
 
 let serverInstance = server.build();
-serverInstance.listen(PORT);
-
-console.log(`Express app listening on port ${PORT}`);
+serverInstance.listen(PORT, async () => {
+  console.log(`Express app listening on port ${PORT}`);
+  await dbConnect();
+});

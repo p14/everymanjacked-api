@@ -6,7 +6,7 @@ export interface IUser {
 }
 
 @injectable()
-export class UserService {
+export default class UserService {
 
   private userStorage: IUser[] = [{
     email: 'lorem@ipsum.com',
