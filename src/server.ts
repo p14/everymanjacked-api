@@ -18,9 +18,7 @@ container.bind<UserService>(TYPES.UserService).to(UserService);
 const server = new InversifyExpressServer(container);
 
 server.setConfig((app) => {
-  app.use(bodyParser.urlencoded({
-    extended: true
-  }));
+  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 });
 
