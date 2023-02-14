@@ -3,7 +3,6 @@ import { BaseHttpController, controller, httpPost, request } from 'inversify-exp
 import TYPES from '../constants/types';
 import { inject } from 'inversify';
 import AccountService from '../services/account.service';
-import { UserRole } from '../models/user.model';
 
 @controller('/account')
 export default class AccountController extends BaseHttpController {
@@ -22,12 +21,7 @@ export default class AccountController extends BaseHttpController {
   ) {
     try {
       const { username, password } = req.body;
-      const authenticate = await this.accountService.loginUser(username.toLowerCase(), password);
-
-      if (authenticate.user.role !== UserRole.ADMIN) {
-        throw new Error('User Not Permitted');
-      }
-
+      const authenticate = await this.accountService.loginAdminUser(username.toLowerCase(), password);
       return this.ok(authenticate);
     } catch (error: any) {
       return this.badRequest();
