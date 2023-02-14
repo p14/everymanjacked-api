@@ -4,8 +4,9 @@ import { controller, httpGet, httpPost, httpPut, httpDelete, BaseHttpController,
 import { Types } from 'mongoose';
 import TYPES from '../constants/types';
 import WorkoutService from '../services/workout.service';
+import { authMiddleware } from '../middleware/auth.middleware';
 
-@controller('/workouts')
+@controller('/workouts', authMiddleware)
 export default class WorkoutController extends BaseHttpController {
   constructor(
     @inject(TYPES.Services.Workout) private workoutService: WorkoutService,

@@ -36,7 +36,8 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
       console.error(error);
       return res.status(403);
     }
-
+    
+    req.body.user = user;
     next();
   });
 };

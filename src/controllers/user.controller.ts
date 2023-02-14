@@ -4,8 +4,9 @@ import { controller, httpGet, httpPost, httpPut, httpDelete, BaseHttpController,
 import { Types } from 'mongoose';
 import TYPES from '../constants/types';
 import UserService from '../services/user.service';
+import { adminMiddleware } from '../middleware/auth.middleware';
 
-@controller('/users')
+@controller('/users', adminMiddleware)
 export default class UserController extends BaseHttpController {
   constructor(
     @inject(TYPES.Services.User) private userService: UserService,

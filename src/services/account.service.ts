@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import TYPES from '../constants/types';
 import UserService from './user.service';
 import { UserRole } from '../models/user.model';
+import { Types } from 'mongoose';
 
 dotenv.config();
 
@@ -61,6 +62,11 @@ export default class AccountService {
     };
   
     return { AuthenticationResult, user: payload };
+  }
+
+  public async me(id: Types.ObjectId) {
+    const user = await this.userService.getUser(id);
+    return user;
   }
 
   public async refreshToken(data: any) {

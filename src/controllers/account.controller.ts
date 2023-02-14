@@ -1,8 +1,9 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import { BaseHttpController, controller, httpPost, request } from 'inversify-express-utils';
+import { BaseHttpController, controller, httpPost, request, httpGet } from 'inversify-express-utils';
 import TYPES from '../constants/types';
 import AccountService from '../services/account.service';
+import { authMiddleware } from '../middleware/auth.middleware';
 
 @controller('/account')
 export default class AccountController extends BaseHttpController {
@@ -50,6 +51,21 @@ export default class AccountController extends BaseHttpController {
   @httpPost('/logout')
   private async logout() {
     return this.ok();
+  }
+
+  @httpGet('/me', authMiddleware)
+  private async me(
+    @request() req: Request,
+  ) {
+    try {
+      const content = await this.accountService.me(req.body.user._id);
+      return this.ok(content);
+    } catch (error: any) {
+      if (error.message) {
+        return this.badRequest(error.message);
+      }
+      return this.internalServerError();
+    }
   }
 
   @httpPost('/refresh')
