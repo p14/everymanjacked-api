@@ -3,8 +3,8 @@ import { inject } from 'inversify';
 import { controller, httpGet, httpPost, httpPut, httpDelete, BaseHttpController, requestParam, request } from 'inversify-express-utils';
 import { Types } from 'mongoose';
 import TYPES from '../constants/types';
+import { adminMiddleware } from '../middleware/auth.middleware';
 import ExerciseService from '../services/exercise.service';
-import { authMiddleware } from '../middleware/auth.middleware';
 
 @controller('/exercises')
 export default class ExerciseController extends BaseHttpController {
@@ -24,7 +24,7 @@ export default class ExerciseController extends BaseHttpController {
     }
   }
 
-  @httpPost('/', authMiddleware)
+  @httpPost('/', adminMiddleware)
   private createExercise(
     @request() req: Request,
   ) {
@@ -48,7 +48,7 @@ export default class ExerciseController extends BaseHttpController {
     }
   }
 
-  @httpPut('/:id', authMiddleware)
+  @httpPut('/:id', adminMiddleware)
   private updateExercise(
     @requestParam('id') id: Types.ObjectId,
     @request() req: Request,
@@ -56,7 +56,7 @@ export default class ExerciseController extends BaseHttpController {
     return this.exerciseService.updateExercise(id, req.body);
   }
 
-  @httpDelete('/:id', authMiddleware)
+  @httpDelete('/:id', adminMiddleware)
   private deleteExercise(
     @requestParam('id') id: Types.ObjectId,
   ) {
