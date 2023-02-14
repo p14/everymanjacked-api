@@ -5,7 +5,6 @@ import cors from 'cors';
 import { corsOptions } from './constants/config';
 import container from './ioc.config';
 import dbConnect from './utils/dbConnector';
-// import './controllers/_controllers';
 
 const PORT = process.env.PORT || 8000;
 
