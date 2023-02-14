@@ -19,7 +19,7 @@ export default class AccountService {
   }
 
   public async loginAdminUser(username: string, password: string) {
-    const user = await this.userService.getUserByUsername(username);
+    const user = await this.userService.getUserByUsername(username.toLowerCase());
 
     if (user.role !== UserRole.ADMIN) {
       throw new Error('User Not Permitted');
@@ -44,7 +44,7 @@ export default class AccountService {
   }
 
   public async loginUser(username: string, password: string) {
-    const user = await this.userService.getUserByUsername(username);
+    const user = await this.userService.getUserByUsername(username.toLowerCase());
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {

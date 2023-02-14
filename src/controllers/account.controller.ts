@@ -1,7 +1,7 @@
 import { Request } from 'express';
+import { inject } from 'inversify';
 import { BaseHttpController, controller, httpPost, request } from 'inversify-express-utils';
 import TYPES from '../constants/types';
-import { inject } from 'inversify';
 import AccountService from '../services/account.service';
 
 @controller('/account')
@@ -21,10 +21,13 @@ export default class AccountController extends BaseHttpController {
   ) {
     try {
       const { username, password } = req.body;
-      const authenticate = await this.accountService.loginAdminUser(username.toLowerCase(), password);
+      const authenticate = await this.accountService.loginAdminUser(username, password);
       return this.ok(authenticate);
     } catch (error: any) {
-      return this.badRequest();
+      if (error.message) {
+        return this.badRequest(error.message);
+      }
+      return this.internalServerError();
     }
   }
 
@@ -34,10 +37,13 @@ export default class AccountController extends BaseHttpController {
   ) {
     try {
       const { username, password } = req.body;
-      const authenticate = await this.accountService.loginUser(username.toLowerCase(), password);
+      const authenticate = await this.accountService.loginUser(username, password);
       return this.ok(authenticate);
     } catch (error: any) {
-      return this.badRequest();
+      if (error.message) {
+        return this.badRequest(error.message);
+      }
+      return this.internalServerError();
     }
   }
 
@@ -55,7 +61,10 @@ export default class AccountController extends BaseHttpController {
       const refreshToken = this.accountService.refreshToken(data);
       return this.ok(refreshToken);
     } catch (error: any) {
-      return this.badRequest();
+      if (error.message) {
+        return this.badRequest(error.message);
+      }
+      return this.internalServerError();
     }
   }
 
@@ -67,7 +76,10 @@ export default class AccountController extends BaseHttpController {
       const authenticate = await this.accountService.registerUser(req.body);
       return this.ok(authenticate);
     } catch (error: any) {
-      return this.badRequest();
+      if (error.message) {
+        return this.badRequest(error.message);
+      }
+      return this.internalServerError();
     }
   }
 }
