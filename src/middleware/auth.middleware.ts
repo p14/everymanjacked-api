@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
-export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
+export async function authMiddleware(req: Request, res: Response, next: NextFunction) {  
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ').pop();
 
@@ -18,7 +18,7 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
       return res.status(403);
     }
 
-    (req as any).user = user;
+    // (req as any).user = user; // needed?
 
     next();
   });

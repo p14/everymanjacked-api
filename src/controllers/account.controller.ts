@@ -1,6 +1,5 @@
-import { BaseHttpController, controller, httpGet, httpPost, request, requestParam } from 'inversify-express-utils';
 import { Request } from 'express';
-import { Types } from 'mongoose';
+import { BaseHttpController, controller, httpPost, request } from 'inversify-express-utils';
 import TYPES from '../constants/types';
 import { inject } from 'inversify';
 import AccountService from '../services/account.service';
