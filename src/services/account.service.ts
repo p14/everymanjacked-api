@@ -11,7 +11,7 @@ dotenv.config();
 
 @injectable()
 export default class AccountService {
-  private userService: UserService; // TODO: Change to User Repository
+  private userService: UserService;
 
   constructor(
     @inject(TYPES.Services.User) userService: UserService,

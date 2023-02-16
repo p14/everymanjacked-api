@@ -1,6 +1,7 @@
 import { BaseHttpController, controller, httpGet } from 'inversify-express-utils';
+import TYPES from '../constants/types';
 
-@controller('/api')
+@controller(TYPES.Namespace.API)
 export default class APIController extends BaseHttpController {
   constructor() {
     super();

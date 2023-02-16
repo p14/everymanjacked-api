@@ -1,9 +1,7 @@
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
-import TYPES from '../constants/types';
 import UserModel, { User } from '../models/user.model';
 import { hashPassword } from '../utils/helpers';
 
@@ -11,15 +9,11 @@ dotenv.config();
 
 @injectable()
 export default class UserService {
-  private userRepository = UserModel;
+  protected Model = UserModel;
 
-  constructor(
-    // @inject(TYPES.Repositories.User) userRepository: typeof UserModel,
-  ) {
-    // this.userRepository = userRepository;
-  }
+  constructor() {}
 
-  static async comparePassword(id: Types.ObjectId, password: string) {
+  private async comparePassword(id: Types.ObjectId, password: string) {
     const user = await UserModel.findById(id, 'password');
     if (!user) {
       throw new Error('User Not Found');
@@ -28,19 +22,19 @@ export default class UserService {
   }
 
   public async getUsers() {
-    const users = await this.userRepository.find({}, '-password');
+    const users = await this.Model.find({}, '-password');
     return users;
   }
 
   public async createUser(newUser: User) {
     const hash = await hashPassword(newUser.password);
-    const data = await this.userRepository.create({ ...newUser, password: hash });
+    const data = await this.Model.create({ ...newUser, password: hash });
     const user = data.toJSON();
     return user;
   }
 
   public async getUser(id: Types.ObjectId) {
-    const data = await this.userRepository.findById(id);
+    const data = await this.Model.findById(id);
     if (!data) {
       throw new Error('User Not Found');
     }
@@ -49,7 +43,7 @@ export default class UserService {
   }
 
   public async getUserByUsername(username: string) {
-    const data = await this.userRepository.findOne({ username });
+    const data = await this.Model.findOne({ username });
     if (!data) {
       throw new Error('User Not Found');
     }
@@ -62,10 +56,9 @@ export default class UserService {
       updatedUser.password = hash;
     }
 
-    const data = await this.userRepository.findByIdAndUpdate(
+    const data = await this.Model.findOneAndUpdate(
       id,
       { ...updatedUser },
-      { new: true, runValidators: true },
     );
 
     if (!data) {
@@ -77,7 +70,7 @@ export default class UserService {
   }
 
   public async updateUserPassword(id: Types.ObjectId, oldPassword: string, newPassword: string) {
-    const isValidPassword = await UserService.comparePassword(id, oldPassword);
+    const isValidPassword = await this.comparePassword(id, oldPassword);
     if (!isValidPassword) {
       throw new Error('Old Password Invalid');
     }
@@ -85,7 +78,7 @@ export default class UserService {
   }
 
   public async deleteUser(id: Types.ObjectId) {
-    const data = await this.userRepository.deleteOne({ _id: id });
+    const data = await this.Model.deleteOne(id);
     if (!data.acknowledged) {
       throw new Error('User Not Found');
     }

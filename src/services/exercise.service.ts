@@ -1,30 +1,25 @@
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import ExerciseModel, { Exercise } from '../models/exercise.model';
-import TYPES from '../constants/types';
 import { Types } from 'mongoose';
 
 @injectable()
 export default class ExerciseService {
-  private exerciseRepository = ExerciseModel;
+  protected Model = ExerciseModel;
 
-  constructor(
-    // @inject(TYPES.Repositories.Exercise) exerciseRepository: typeof ExerciseModel,
-  ) {
-    // this.exerciseRepository = exerciseRepository;
-  }
+  constructor() {}
 
   public async getExercises() {
-    const exercises = await ExerciseModel.find();
+    const exercises = await this.Model.find();
     return exercises;
   }
 
   public async createExercise(newExercise: Exercise) {
-    const exercise = await this.exerciseRepository.create(newExercise);
+    const exercise = await this.Model.create(newExercise);
     return exercise;
   }
 
   public async getExercise(id: Types.ObjectId) {
-    const exercise = await this.exerciseRepository.findById(id);
+    const exercise = await this.Model.findById(id);
     if (!exercise) {
       throw new Error('Exercise Not Found');
     }
@@ -32,18 +27,26 @@ export default class ExerciseService {
   }
 
   public async updateExercise(id: Types.ObjectId, updatedExercise: Exercise) {
-    const exercise = await this.exerciseRepository.findByIdAndUpdate(id, updatedExercise, { new: true, runValidators: true });
+    const exercise = await this.Model.findByIdAndUpdate(
+      id,
+      updatedExercise,
+      { new: true, runValidators: true },
+    );
+
     if (!exercise) {
       throw new Error('Exercise Not Found');
     }
+
     return exercise;
   }
 
   public async deleteExercise(id: Types.ObjectId) {
-    const data = await ExerciseModel.deleteOne({ _id: id });
+    const data = await this.Model.deleteOne({ _id: id });
+
     if (!data.acknowledged) {
       throw new Error('Exercise Not Found');
     }
+
     return data;
   }
 }

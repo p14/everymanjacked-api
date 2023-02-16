@@ -5,7 +5,7 @@ import TYPES from '../constants/types';
 import AccountService from '../services/account.service';
 import { authMiddleware } from '../middleware/auth.middleware';
 
-@controller('/account')
+@controller(TYPES.Namespace.Account)
 export default class AccountController extends BaseHttpController {
   private accountService: AccountService;
 

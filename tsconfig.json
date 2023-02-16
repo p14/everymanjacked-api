@@ -6,14 +6,13 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipDefaultLibCheck": true, // needed?
-    "skipLibCheck": true, // needed?
+    "skipDefaultLibCheck": false,
+    "skipLibCheck": false,
     "noImplicitAny": false,
     "sourceMap": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    // "noUnusedLocals": true
   },
   "compileOnSave": false,
   "exclude": [

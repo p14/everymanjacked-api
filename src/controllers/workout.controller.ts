@@ -6,7 +6,7 @@ import TYPES from '../constants/types';
 import WorkoutService from '../services/workout.service';
 import { authMiddleware } from '../middleware/auth.middleware';
 
-@controller('/workouts', authMiddleware)
+@controller(TYPES.Namespace.Workout, authMiddleware)
 export default class WorkoutController extends BaseHttpController {
   constructor(
     @inject(TYPES.Services.Workout) private workoutService: WorkoutService,

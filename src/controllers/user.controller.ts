@@ -6,7 +6,7 @@ import TYPES from '../constants/types';
 import UserService from '../services/user.service';
 import { adminMiddleware } from '../middleware/auth.middleware';
 
-@controller('/users', adminMiddleware)
+@controller(TYPES.Namespace.User, adminMiddleware)
 export default class UserController extends BaseHttpController {
   constructor(
     @inject(TYPES.Services.User) private userService: UserService,
