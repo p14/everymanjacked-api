@@ -8,8 +8,6 @@ import './controllers/_controllers';
 // Load everything needed to the Container
 const container = new Container();
 
-// Repositories
-
 // Services
 container.bind<Services.AccountService>(TYPES.Services.Account).to(Services.AccountService);
 container.bind<Services.ExerciseService>(TYPES.Services.Exercise).to(Services.ExerciseService);
