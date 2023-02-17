@@ -74,7 +74,7 @@ export default class AccountController extends BaseHttpController {
   ) {
     try {
       const data = req.body
-      const refreshToken = this.accountService.refreshToken(data);
+      const refreshToken = await this.accountService.refreshToken(data);
       return this.ok(refreshToken);
     } catch (error: any) {
       if (error.message) {

@@ -74,7 +74,7 @@ export default class AccountService {
       throw new Error('No Refresh Token');
     }
 
-    jwt.verify(data.refreshToken, String(process.env.JWT_SECRET), async (error: any, user: any) => {
+    return jwt.verify(data.refreshToken, String(process.env.JWT_SECRET), async (error: any, user: any) => {
       if (error) {
         throw new Error('Expired Refresh Token');
       }

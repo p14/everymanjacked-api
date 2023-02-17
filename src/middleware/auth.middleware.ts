@@ -16,7 +16,7 @@ export async function adminMiddleware(req: Request, res: Response, next: NextFun
   jwt.verify(token, String(process.env.JWT_SECRET), (error: any, user: any) => {
     if (error || user.role !== UserRole.ADMIN) {
       console.error(error);
-      return res.status(403);
+      return res.sendStatus(403);
     }
 
     next();
@@ -34,7 +34,7 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
   jwt.verify(token, String(process.env.JWT_SECRET), (error: any, user: any) => {
     if (error || !user) {
       console.error(error);
-      return res.status(403);
+      return res.sendStatus(403);
     }
     
     req.body.user = user;
