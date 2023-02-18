@@ -20,7 +20,23 @@ export const parseError = (error: any) => {
 };
 
 export const hashPassword = async (password: string) => {
-    const salt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS));
-    const hash = await bcrypt.hash(password, salt);
-    return hash;
-  };
+  const salt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS));
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
+};
+
+export const shuffle = (array: any[]) => {
+  let currentIndex = array.length;
+  let temporaryValue: any, randomIndex: number;
+
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+};

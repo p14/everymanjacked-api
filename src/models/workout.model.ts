@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { ExerciseCategory } from './exercise.model';
 
 export enum WorkoutCategory {
   CHEST = 'CHEST',
@@ -13,6 +14,8 @@ export enum WorkoutCategory {
   FULL_BODY = 'FULL_BODY',
   HIIT = 'HIIT',
 }
+
+export type Categories = WorkoutCategory | ExerciseCategory;
 
 export interface Workout {
   title: string

@@ -6,7 +6,7 @@ import TYPES from '../constants/types';
 import WorkoutService from '../services/workout.service';
 import { authMiddleware } from '../middleware/auth.middleware';
 
-@controller(TYPES.Namespace.Workout, authMiddleware)
+@controller(TYPES.Namespace.Workout)
 export default class WorkoutController extends BaseHttpController {
   constructor(
     @inject(TYPES.Services.Workout) private workoutService: WorkoutService,
@@ -30,6 +30,18 @@ export default class WorkoutController extends BaseHttpController {
   ) {
     try {
       const content = this.workoutService.createWorkout(req.body);
+      return content;
+    } catch (error: any) {
+      return this.badRequest(error.message);
+    }
+  }
+
+  @httpPost('/generate')
+  private generateWorkout(
+    @request() req: Request,
+  ) {
+    try {
+      const content = this.workoutService.generateWorkout(req.body);
       return content;
     } catch (error: any) {
       return this.badRequest(error.message);
