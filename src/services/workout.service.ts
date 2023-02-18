@@ -69,10 +69,16 @@ export default class WorkoutService {
     const filteredExercises: Exercise[] = [];
 
     if (category === WorkoutCategory.FULL_BODY) {
-      const exerciseData = await this.exerciseService.getExercises() as Exercise[];
+      const exerciseData = await this.exerciseService.getExercises(
+        {},
+        { createdAt: 0, updatedAt: 0, __v: 0 },
+      ) as Exercise[];
       allExercises.push(...exerciseData);
     } else {
-      const exerciseData = await this.exerciseService.getExercises({ categories: category }) as Exercise[];
+      const exerciseData = await this.exerciseService.getExercises(
+        { categories: category },
+        { createdAt: 0, updatedAt: 0, __v: 0 },
+      ) as Exercise[];
       allExercises.push(...exerciseData);
     }
 

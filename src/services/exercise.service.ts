@@ -8,8 +8,8 @@ export default class ExerciseService {
 
   constructor() {}
 
-  public async getExercises(query = {}) {
-    const exercises = await this.Model.find(query);
+  public async getExercises(query = {}, filter = {}) {
+    const exercises = await this.Model.find(query, filter);
     return exercises;
   }
 
