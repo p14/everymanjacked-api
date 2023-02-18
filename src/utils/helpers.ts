@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
+import { BaseExerciseCategory, Exercise } from '../models/exercise.model';
 
 dotenv.config();
 
@@ -40,3 +41,23 @@ export const shuffle = (array: any[]) => {
 
   return array;
 };
+
+export const parseExerciseCategories = (data: string[]): string => {
+  const parsedCategory = data.find((category) => {
+    return category in BaseExerciseCategory;
+  });
+
+  if (parsedCategory) {
+    return parsedCategory;
+  }
+
+  return '';
+};
+
+export const parseWorkout = (data: Exercise[]) => (
+  data.map((exercise: any) => ({
+    _id: exercise._id,
+    title: exercise.title,
+    categories: parseExerciseCategories(exercise.categories),
+  }))
+);

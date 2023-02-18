@@ -5,7 +5,7 @@ import TYPES from '../constants/types';
 import ExerciseService from './exercise.service';
 import { WorkoutCategory } from '../models/workout.model';
 import { Exercise, ExerciseCategory } from '../models/exercise.model';
-import { shuffle } from '../utils/helpers';
+import { parseExerciseCategories, parseWorkout, shuffle } from '../utils/helpers';
 
 @injectable()
 export default class WorkoutService {
@@ -73,12 +73,14 @@ export default class WorkoutService {
         {},
         { createdAt: 0, updatedAt: 0, __v: 0 },
       ) as Exercise[];
+
       allExercises.push(...exerciseData);
     } else {
       const exerciseData = await this.exerciseService.getExercises(
         { categories: category },
         { createdAt: 0, updatedAt: 0, __v: 0 },
       ) as Exercise[];
+
       allExercises.push(...exerciseData);
     }
 
@@ -141,18 +143,15 @@ export default class WorkoutService {
 
       const shuffledExercises = [ ...shuffledPrimaryExercises, ...shuffledSecondaryExercises ];
       const workout = shuffledExercises.slice(0, length);
-
-      return workout;
+      return parseWorkout(workout);
     } else if (category === WorkoutCategory.HIIT) {
       const shuffledExercises: Exercise[] = shuffle(filteredExercises);
       const workout = shuffledExercises.slice(0, (length + 2));
-
-      return workout;
+      return parseWorkout(workout);
     } else {
       const shuffledExercises: Exercise[] = shuffle(filteredExercises);
       const workout = shuffledExercises.slice(0, length);
-
-      return workout;
+      return parseWorkout(workout);
     }
   }
 }
