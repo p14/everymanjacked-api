@@ -4,8 +4,6 @@ Every Man Jacked is a workout tool that helps users structure their own workouts
 
 This application is built using Node, Express, Inversify, and TypeScript for a quick and concise experience. This application was built with the purpose of improving technical skills and educating others with a simple and clean workflow while utilizing Inverse of Control and Dependency Injection concepts.
 
-## Getting Started
-
 ### Installing
 
 * Run `npm install`

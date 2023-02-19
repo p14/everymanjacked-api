@@ -24,8 +24,3 @@ dbConnect().then(() => {
     console.log(`Express app listening on port ${PORT}`);
   });
 });
-
-// serverInstance.listen(PORT, async () => {
-//   console.log(`Express app listening on port ${PORT}`);
-//   await dbConnect();
-// });
