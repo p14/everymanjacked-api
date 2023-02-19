@@ -5,7 +5,7 @@ import TYPES from '../constants/types';
 import ExerciseService from './exercise.service';
 import { WorkoutCategory } from '../models/workout.model';
 import { Exercise, ExerciseCategory } from '../models/exercise.model';
-import { parseExerciseCategories, parseWorkout, shuffle } from '../utils/helpers';
+import { parseWorkout, shuffle } from '../utils/helpers';
 
 @injectable()
 export default class WorkoutService {

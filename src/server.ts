@@ -18,7 +18,14 @@ server.setConfig((app) => {
 });
 
 let serverInstance = server.build();
-serverInstance.listen(PORT, async () => {
-  console.log(`Express app listening on port ${PORT}`);
-  await dbConnect();
+
+dbConnect().then(() => {
+  serverInstance.listen(PORT, async () => {
+    console.log(`Express app listening on port ${PORT}`);
+  });
 });
+
+// serverInstance.listen(PORT, async () => {
+//   console.log(`Express app listening on port ${PORT}`);
+//   await dbConnect();
+// });

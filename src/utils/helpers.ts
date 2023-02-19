@@ -42,7 +42,7 @@ export const shuffle = (array: any[]) => {
   return array;
 };
 
-export const parseExerciseCategories = (data: string[]): string => {
+const parseExerciseCategories = (data: string[]): string => {
   const parsedCategory = data.find((category) => {
     return category in BaseExerciseCategory;
   });
