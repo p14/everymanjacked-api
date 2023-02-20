@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 import TYPES from '../constants/types';
 import { adminMiddleware } from '../middleware/auth.middleware';
 import ExerciseService from '../services/exercise.service';
+import { parsedErrorMessage } from '../utils/helpers';
 
 @controller(TYPES.Namespace.Exercise)
 export default class ExerciseController extends BaseHttpController {
@@ -15,24 +16,26 @@ export default class ExerciseController extends BaseHttpController {
   }
 
   @httpGet('/')
-  private getExercises() {
+  private async getExercises() {
     try {
-      const content = this.exerciseService.getExercises();
+      const content = await this.exerciseService.getExercises();
       return content;
     } catch (error: any) {
-      return this.badRequest(error.message);
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
     }
   }
 
   @httpPost('/', adminMiddleware)
-  private createExercise(
+  private async createExercise(
     @request() req: Request,
   ) {
     try {
-      const content = this.exerciseService.createExercise(req.body);
+      const content = await this.exerciseService.createExercise(req.body);
       return content;
     } catch (error: any) {
-      return this.badRequest(error.message);
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
     }
   }
 
@@ -41,25 +44,38 @@ export default class ExerciseController extends BaseHttpController {
     @requestParam('id') id: Types.ObjectId,
   ) {
     try {
-      const content = this.exerciseService.getExercise(id);
+      const content = await this.exerciseService.getExercise(id);
       return content;
     } catch (error: any) {
-      return this.badRequest(error.message);
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
     }
   }
 
   @httpPut('/:id', adminMiddleware)
-  private updateExercise(
+  private async updateExercise(
     @requestParam('id') id: Types.ObjectId,
     @request() req: Request,
   ) {
-    return this.exerciseService.updateExercise(id, req.body);
+    try {
+      const content = await this.exerciseService.updateExercise(id, req.body);
+      return content;
+    } catch (error: any) {
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
+    }
   }
 
   @httpDelete('/:id', adminMiddleware)
-  private deleteExercise(
+  private async deleteExercise(
     @requestParam('id') id: Types.ObjectId,
   ) {
-    return this.exerciseService.deleteExercise(id);
+    try {
+      const content = await this.exerciseService.deleteExercise(id);
+      return content;
+    } catch (error: any) {
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
+    }
   }
 }

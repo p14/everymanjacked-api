@@ -20,6 +20,17 @@ export const parseError = (error: any) => {
   return parsedError;
 };
 
+export const parsedErrorMessage = (error: any) => {
+  let message = error.message;
+
+  if (error.message.match(/E11000 duplicate key error/)) {
+    const duplicateValue = error.message.match(/"([^']+)"/)[1];
+    message = `${duplicateValue} already exists!`;
+  }
+
+  return message;
+};
+
 export const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS));
   const hash = await bcrypt.hash(password, salt);

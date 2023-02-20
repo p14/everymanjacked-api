@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 import TYPES from '../constants/types';
 import WorkoutService from '../services/workout.service';
 import { authMiddleware } from '../middleware/auth.middleware';
+import { parsedErrorMessage } from '../utils/helpers';
 
 @controller(TYPES.Namespace.Workout)
 export default class WorkoutController extends BaseHttpController {
@@ -14,64 +15,80 @@ export default class WorkoutController extends BaseHttpController {
     super();
   }
 
-  @httpGet('/')
-  private getWorkouts() {
+  @httpGet('/', authMiddleware)
+  private async getWorkouts() {
     try {
-      const content = this.workoutService.getWorkouts();
+      const content = await this.workoutService.getWorkouts();
       return content;
     } catch (error: any) {
-      return this.badRequest(error.message);
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
     }
   }
 
-  @httpPost('/')
-  private createWorkout(
+  @httpPost('/', authMiddleware)
+  private async createWorkout(
     @request() req: Request,
   ) {
     try {
-      const content = this.workoutService.createWorkout(req.body);
+      const content = await this.workoutService.createWorkout(req.body);
       return content;
     } catch (error: any) {
-      return this.badRequest(error.message);
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
     }
   }
 
   @httpPost('/generate')
-  private generateWorkout(
+  private async generateWorkout(
     @request() req: Request,
   ) {
     try {
-      const content = this.workoutService.generateWorkout(req.body);
+      const content = await this.workoutService.generateWorkout(req.body);
       return content;
     } catch (error: any) {
-      return this.badRequest(error.message);
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
     }
   }
 
-  @httpGet('/:id')
+  @httpGet('/:id', authMiddleware)
   private async getWorkout(
     @requestParam('id') id: Types.ObjectId,
   ) {
     try {
-      const content = this.workoutService.getWorkout(id);
+      const content = await this.workoutService.getWorkout(id);
       return content;
     } catch (error: any) {
-      return this.badRequest(error.message);
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
     }
   }
 
-  @httpPut('/:id')
-  private updateWorkout(
+  @httpPut('/:id', authMiddleware)
+  private async updateWorkout(
     @requestParam('id') id: Types.ObjectId,
     @request() req: Request,
   ) {
-    return this.workoutService.updateWorkout(id, req.body);
+    try {
+      const content = await this.workoutService.updateWorkout(id, req.body);
+      return content;
+    } catch (error: any) {
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
+    }
   }
 
-  @httpDelete('/:id')
-  private deleteWorkout(
+  @httpDelete('/:id', authMiddleware)
+  private async deleteWorkout(
     @requestParam('id') id: Types.ObjectId,
   ) {
-    return this.workoutService.deleteWorkout(id);
+    try {
+      const content = await this.workoutService.deleteWorkout(id);
+      return content;
+    } catch (error: any) {
+      const message = parsedErrorMessage(error);
+      return this.badRequest(message);
+    }
   }
 }
