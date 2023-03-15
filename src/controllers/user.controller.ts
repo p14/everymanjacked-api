@@ -1,14 +1,14 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import { controller, httpGet, httpPost, httpPut, httpDelete, BaseHttpController, requestParam, request } from 'inversify-express-utils';
+import { controller, httpGet, httpPost, httpPut, httpDelete, requestParam, request } from 'inversify-express-utils';
 import { Types } from 'mongoose';
 import TYPES from '../constants/types';
 import UserService from '../services/user.service';
 import { adminMiddleware } from '../middleware/auth.middleware';
-import { parsedErrorMessage } from '../utils/helpers';
+import ResponseController from './extensions/response.controller';
 
 @controller(TYPES.Namespace.User, adminMiddleware)
-export default class UserController extends BaseHttpController {
+export default class UserController extends ResponseController {
   constructor(
     @inject(TYPES.Services.User) private userService: UserService,
   ) {
@@ -21,8 +21,7 @@ export default class UserController extends BaseHttpController {
       const content = await this.userService.getUsers();
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 
@@ -34,8 +33,7 @@ export default class UserController extends BaseHttpController {
       const content = await this.userService.createUser(req.body);
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 
@@ -47,8 +45,7 @@ export default class UserController extends BaseHttpController {
       const content = await this.userService.getUser(id);
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 
@@ -61,8 +58,7 @@ export default class UserController extends BaseHttpController {
       const content = await this.userService.updateUser(id, req.body);
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 
@@ -74,8 +70,7 @@ export default class UserController extends BaseHttpController {
       const content = await this.userService.deleteUser(id);
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 
@@ -89,8 +84,7 @@ export default class UserController extends BaseHttpController {
       const content = await this.userService.updateUserPassword(id, oldPassword, newPassword);
       return this.ok(content);
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 }

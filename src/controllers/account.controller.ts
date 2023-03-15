@@ -1,12 +1,13 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import { BaseHttpController, controller, httpPost, request, httpGet } from 'inversify-express-utils';
+import { controller, httpPost, request, httpGet } from 'inversify-express-utils';
 import TYPES from '../constants/types';
 import AccountService from '../services/account.service';
 import { authMiddleware } from '../middleware/auth.middleware';
+import ResponseController from './extensions/response.controller';
 
 @controller(TYPES.Namespace.Account)
-export default class AccountController extends BaseHttpController {
+export default class AccountController extends ResponseController {
   private accountService: AccountService;
 
   constructor(
@@ -25,10 +26,7 @@ export default class AccountController extends BaseHttpController {
       const authenticate = await this.accountService.loginAdminUser(username, password);
       return this.ok(authenticate);
     } catch (error: any) {
-      if (error.message) {
-        return this.badRequest(error.message);
-      }
-      return this.internalServerError();
+      return this.handleError(error);
     }
   }
 
@@ -41,10 +39,7 @@ export default class AccountController extends BaseHttpController {
       const authenticate = await this.accountService.loginUser(username, password);
       return this.ok(authenticate);
     } catch (error: any) {
-      if (error.message) {
-        return this.badRequest(error.message);
-      }
-      return this.internalServerError();
+      return this.handleError(error);
     }
   }
 
@@ -61,10 +56,7 @@ export default class AccountController extends BaseHttpController {
       const content = await this.accountService.me(req.body.user._id);
       return this.ok(content);
     } catch (error: any) {
-      if (error.message) {
-        return this.badRequest(error.message);
-      }
-      return this.internalServerError();
+      return this.handleError(error);
     }
   }
 
@@ -77,10 +69,7 @@ export default class AccountController extends BaseHttpController {
       const refreshToken = await this.accountService.refreshToken(data);
       return this.ok(refreshToken);
     } catch (error: any) {
-      if (error.message) {
-        return this.badRequest(error.message);
-      }
-      return this.internalServerError();
+      return this.handleError(error);
     }
   }
 
@@ -92,10 +81,7 @@ export default class AccountController extends BaseHttpController {
       const authenticate = await this.accountService.registerUser(req.body);
       return this.ok(authenticate);
     } catch (error: any) {
-      if (error.message) {
-        return this.badRequest(error.message);
-      }
-      return this.internalServerError();
+      return this.handleError(error);
     }
   }
 }

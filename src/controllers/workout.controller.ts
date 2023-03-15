@@ -1,14 +1,14 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import { controller, httpGet, httpPost, httpPut, httpDelete, BaseHttpController, requestParam, request } from 'inversify-express-utils';
+import { controller, httpGet, httpPost, httpPut, httpDelete, requestParam, request } from 'inversify-express-utils';
 import { Types } from 'mongoose';
 import TYPES from '../constants/types';
 import WorkoutService from '../services/workout.service';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { parsedErrorMessage } from '../utils/helpers';
+import ResponseController from './extensions/response.controller';
 
 @controller(TYPES.Namespace.Workout)
-export default class WorkoutController extends BaseHttpController {
+export default class WorkoutController extends ResponseController {
   constructor(
     @inject(TYPES.Services.Workout) private workoutService: WorkoutService,
   ) {
@@ -21,8 +21,7 @@ export default class WorkoutController extends BaseHttpController {
       const content = await this.workoutService.getWorkouts();
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 
@@ -34,8 +33,7 @@ export default class WorkoutController extends BaseHttpController {
       const content = await this.workoutService.createWorkout(req.body);
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 
@@ -47,8 +45,7 @@ export default class WorkoutController extends BaseHttpController {
       const content = await this.workoutService.generateWorkout(req.body);
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 
@@ -60,8 +57,7 @@ export default class WorkoutController extends BaseHttpController {
       const content = await this.workoutService.getWorkout(id);
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 
@@ -74,8 +70,7 @@ export default class WorkoutController extends BaseHttpController {
       const content = await this.workoutService.updateWorkout(id, req.body);
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 
@@ -87,8 +82,7 @@ export default class WorkoutController extends BaseHttpController {
       const content = await this.workoutService.deleteWorkout(id);
       return content;
     } catch (error: any) {
-      const message = parsedErrorMessage(error);
-      return this.badRequest(message);
+      return this.handleError(error);
     }
   }
 }
