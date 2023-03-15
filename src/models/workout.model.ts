@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { model, Schema } from 'mongoose';
 import { ExerciseCategory } from './exercise.model';
 

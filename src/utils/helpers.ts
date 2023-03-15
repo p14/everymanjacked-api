@@ -5,27 +5,25 @@ import { BaseExerciseCategory, Exercise } from '../models/exercise.model';
 dotenv.config();
 
 export const parseError = (error: any) => {
-  let message = error.message;
+  let { message } = error;
 
-  if (error.message.match(/E11000 duplicate key error/)) {
-    const duplicateValue = error.message.match(/"([^']+)"/)[1];
+  if (message.match(/E11000 duplicate key error/)) {
+    const duplicateValue = message.match(/"([^']+)"/)[1];
     message = `${duplicateValue} already exists!`;
   }
 
-  let parsedError = {
+  const parsedError = {
     ...error,
     message,
-  }
+  };
 
   return parsedError;
 };
 
-export const parsedErrorMessage = (error: any) => {
-  let message = error.message;
-
-  if (error.message.match(/E11000 duplicate key error/)) {
-    const duplicateValue = error.message.match(/"([^']+)"/)[1];
-    message = `${duplicateValue} already exists!`;
+export const parsedErrorMessage = (message: string) => {
+  if (message.match(/E11000 duplicate key error/)) {
+    const duplicateValue = (message.match(/"([^']+)"/) as string[])[1];
+    return `${duplicateValue} already exists!`;
   }
 
   return message;
@@ -38,25 +36,25 @@ export const hashPassword = async (password: string) => {
 };
 
 export const shuffle = (array: any[]) => {
-  let currentIndex = array.length;
-  let temporaryValue: any, randomIndex: number;
+  const newArray = [...array];
+  let currentIndex = newArray.length;
+  let temporaryValue: any;
+  let randomIndex: number;
 
-  while (0 !== currentIndex) {
+  while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;
 
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
+    temporaryValue = newArray[currentIndex];
+    newArray[currentIndex] = newArray[randomIndex];
+    newArray[randomIndex] = temporaryValue;
   }
 
-  return array;
+  return newArray;
 };
 
 const parseExerciseCategories = (data: string[]): string => {
-  const parsedCategory = data.find((category) => {
-    return category in BaseExerciseCategory;
-  });
+  const parsedCategory = data.find((category) => category in BaseExerciseCategory);
 
   if (parsedCategory) {
     return parsedCategory;

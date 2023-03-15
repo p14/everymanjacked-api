@@ -2,10 +2,10 @@ import { inject, injectable } from 'inversify';
 import bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+import { Types } from 'mongoose';
 import TYPES from '../constants/types';
 import UserService from './user.service';
 import { UserRole } from '../models/user.model';
-import { Types } from 'mongoose';
 
 dotenv.config();
 
@@ -31,16 +31,16 @@ export default class AccountService {
     if (!validPassword) {
       throw new Error('Invalid Password');
     }
-  
+
     const payload = user.toJSON();
     const token = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 3600 });
     const refresh = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 86400 });
-  
+
     const AuthenticationResult = {
       AccessToken: token,
       RefreshToken: refresh,
     };
-  
+
     return { AuthenticationResult, user: payload };
   }
 
@@ -51,16 +51,16 @@ export default class AccountService {
     if (!validPassword) {
       throw new Error('Invalid Password');
     }
-  
+
     const payload = user.toJSON();
     const token = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 3600 });
     const refresh = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 86400 });
-  
+
     const AuthenticationResult = {
       AccessToken: token,
       RefreshToken: refresh,
     };
-  
+
     return { AuthenticationResult, user: payload };
   }
 
@@ -74,22 +74,26 @@ export default class AccountService {
       throw new Error('No Refresh Token');
     }
 
-    return jwt.verify(data.refreshToken, String(process.env.JWT_SECRET), async (error: any, user: any) => {
-      if (error) {
-        throw new Error('Expired Refresh Token');
-      }
+    return jwt.verify(
+      data.refreshToken,
+      String(process.env.JWT_SECRET),
+      async (error: any, user: any) => {
+        if (error) {
+          throw new Error('Expired Refresh Token');
+        }
 
-      const payload = await this.userService.getUser(user._id);
-      const token = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 3600 });
-      const refresh = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 86400 });
-    
-      const AuthenticationResult = {
-        AccessToken: token,
-        RefreshToken: refresh,
-      };
+        const payload = await this.userService.getUser(user._id);
+        const token = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 3600 });
+        const refresh = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 86400 });
 
-      return { AuthenticationResult, user: payload };
-    });
+        const AuthenticationResult = {
+          AccessToken: token,
+          RefreshToken: refresh,
+        };
+
+        return { AuthenticationResult, user: payload };
+      },
+    );
   }
 
   public async registerUser(newUser: any) {

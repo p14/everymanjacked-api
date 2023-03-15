@@ -12,7 +12,7 @@ const TYPES = {
     Exercise: '/exercises',
     User: '/users',
     Workout: '/workouts',
-  }
+  },
 };
 
 export default TYPES;

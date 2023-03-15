@@ -11,9 +11,9 @@ dotenv.config();
 export default class UserService {
   protected Model = UserModel;
 
-  constructor() {}
+  // constructor() {}
 
-  private async comparePassword(id: Types.ObjectId, password: string) {
+  private static async comparePassword(id: Types.ObjectId, password: string) {
     const user = await UserModel.findById(id, 'password');
     if (!user) {
       throw new Error('User Not Found');
@@ -50,7 +50,8 @@ export default class UserService {
     return data;
   }
 
-  public async updateUser(id: Types.ObjectId, updatedUser: User) {
+  public async updateUser(id: Types.ObjectId, userData: User) {
+    const updatedUser = { ...userData };
     if (updatedUser.password) {
       const hash = await hashPassword(updatedUser.password);
       updatedUser.password = hash;
@@ -70,7 +71,7 @@ export default class UserService {
   }
 
   public async updateUserPassword(id: Types.ObjectId, oldPassword: string, newPassword: string) {
-    const isValidPassword = await this.comparePassword(id, oldPassword);
+    const isValidPassword = await UserService.comparePassword(id, oldPassword);
     if (!isValidPassword) {
       throw new Error('Old Password Invalid');
     }

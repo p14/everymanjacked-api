@@ -1,11 +1,10 @@
 import { inject, injectable } from 'inversify';
-import WorkoutModel, { Categories, Workout } from '../models/workout.model';
 import { Types } from 'mongoose';
 import TYPES from '../constants/types';
-import ExerciseService from './exercise.service';
-import { WorkoutCategory } from '../models/workout.model';
 import { Exercise, ExerciseCategory } from '../models/exercise.model';
+import WorkoutModel, { Categories, Workout, WorkoutCategory } from '../models/workout.model';
 import { parseWorkout, shuffle } from '../utils/helpers';
+import ExerciseService from './exercise.service';
 
 @injectable()
 export default class WorkoutService {
@@ -141,17 +140,19 @@ export default class WorkoutService {
         shuffledLegExercises[1],
       ]);
 
-      const shuffledExercises = [ ...shuffledPrimaryExercises, ...shuffledSecondaryExercises ];
-      const workout = shuffledExercises.slice(0, length);
-      return parseWorkout(workout);
-    } else if (category === WorkoutCategory.HIIT) {
-      const shuffledExercises: Exercise[] = shuffle(filteredExercises);
-      const workout = shuffledExercises.slice(0, (length + 2));
-      return parseWorkout(workout);
-    } else {
-      const shuffledExercises: Exercise[] = shuffle(filteredExercises);
+      const shuffledExercises = [...shuffledPrimaryExercises, ...shuffledSecondaryExercises];
       const workout = shuffledExercises.slice(0, length);
       return parseWorkout(workout);
     }
+
+    if (category === WorkoutCategory.HIIT) {
+      const shuffledExercises: Exercise[] = shuffle(filteredExercises);
+      const workout = shuffledExercises.slice(0, (length + 2));
+      return parseWorkout(workout);
+    }
+
+    const shuffledExercises: Exercise[] = shuffle(filteredExercises);
+    const workout = shuffledExercises.slice(0, length);
+    return parseWorkout(workout);
   }
 }

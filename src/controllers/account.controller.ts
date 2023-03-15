@@ -1,6 +1,8 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import { controller, httpPost, request, httpGet } from 'inversify-express-utils';
+import {
+  controller, httpPost, httpGet, request,
+} from 'inversify-express-utils';
 import TYPES from '../constants/types';
 import AccountService from '../services/account.service';
 import { authMiddleware } from '../middleware/auth.middleware';
@@ -65,7 +67,7 @@ export default class AccountController extends ResponseController {
     @request() req: Request,
   ) {
     try {
-      const data = req.body
+      const data = req.body;
       const refreshToken = await this.accountService.refreshToken(data);
       return this.ok(refreshToken);
     } catch (error: any) {

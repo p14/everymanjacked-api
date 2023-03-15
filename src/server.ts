@@ -1,8 +1,11 @@
+/* eslint-disable no-console */
+/* eslint-disable import/no-extraneous-dependencies */
+
 import 'reflect-metadata';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import * as bodyParser from 'body-parser';
 import cors from 'cors';
-import { corsOptions } from './constants/config';
+import corsOptions from './constants/config';
 import container from './ioc.config';
 import dbConnect from './utils/dbConnector';
 
@@ -17,7 +20,7 @@ server.setConfig((app) => {
   app.use(cors(corsOptions));
 });
 
-let serverInstance = server.build();
+const serverInstance = server.build();
 
 dbConnect().then(() => {
   serverInstance.listen(PORT, async () => {

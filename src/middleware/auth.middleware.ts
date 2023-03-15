@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { NextFunction, Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
@@ -5,7 +6,7 @@ import { UserRole } from '../models/user.model';
 
 dotenv.config();
 
-export async function adminMiddleware(req: Request, res: Response, next: NextFunction) {  
+export async function adminMiddleware(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ').pop();
 
@@ -21,9 +22,9 @@ export async function adminMiddleware(req: Request, res: Response, next: NextFun
 
     next();
   });
-};
+}
 
-export async function authMiddleware(req: Request, res: Response, next: NextFunction) {  
+export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ').pop();
 
@@ -36,8 +37,8 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
       console.error(error);
       return res.sendStatus(403);
     }
-    
+
     req.body.user = user;
     next();
   });
-};
+}

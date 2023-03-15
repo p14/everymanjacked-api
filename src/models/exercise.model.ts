@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { model, Schema } from 'mongoose';
 
 export enum ExerciseCategory {

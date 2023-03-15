@@ -1,12 +1,12 @@
 import { injectable } from 'inversify';
-import ExerciseModel, { Exercise } from '../models/exercise.model';
 import { Types } from 'mongoose';
+import ExerciseModel, { Exercise } from '../models/exercise.model';
 
 @injectable()
 export default class ExerciseService {
   protected Model = ExerciseModel;
 
-  constructor() {}
+  // constructor() {}
 
   public async getExercises(query = {}, filter = {}) {
     const exercises = await this.Model.find(query, filter);

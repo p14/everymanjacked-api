@@ -1,6 +1,9 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import { controller, httpGet, httpPost, httpPut, httpDelete, requestParam, request } from 'inversify-express-utils';
+import {
+  controller, requestParam, request,
+  httpGet, httpPost, httpPut, httpDelete,
+} from 'inversify-express-utils';
 import { Types } from 'mongoose';
 import TYPES from '../constants/types';
 import UserService from '../services/user.service';
@@ -9,10 +12,13 @@ import ResponseController from './extensions/response.controller';
 
 @controller(TYPES.Namespace.User, adminMiddleware)
 export default class UserController extends ResponseController {
+  private userService: UserService;
+
   constructor(
-    @inject(TYPES.Services.User) private userService: UserService,
+    @inject(TYPES.Services.User) userService: UserService,
   ) {
     super();
+    this.userService = userService;
   }
 
   @httpGet('/')

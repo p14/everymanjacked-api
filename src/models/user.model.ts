@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { model, Schema } from 'mongoose';
 
 export enum UserRole {
@@ -53,11 +54,11 @@ const userSchema = new Schema({
   timestamps: true,
 });
 
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function toJSONMethod() {
   const userObject = this.toObject();
   delete userObject.password;
   return userObject;
-}
+};
 
 const UserModel = model('User', userSchema);
 export default UserModel;

@@ -1,4 +1,4 @@
-export const corsOptions = {
+const corsOptions = {
   credentials: true,
   origin: [
     'http://localhost:3000',
@@ -8,3 +8,5 @@ export const corsOptions = {
     'https://admin.everymanjacked.com',
   ],
 };
+
+export default corsOptions;
