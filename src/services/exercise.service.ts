@@ -1,52 +1,37 @@
-import { injectable } from 'inversify';
-import { Types } from 'mongoose';
-import ExerciseModel, { Exercise } from '../models/exercise.model';
+import { inject, injectable } from 'inversify';
+import { FilterQuery, Types } from 'mongoose';
+import TYPES from '../constants/ioc.types';
+import { Exercise } from '../models/exercise.model';
+import ExerciseRepository from '../repositories/exercise.repository';
 
 @injectable()
 export default class ExerciseService {
-  protected Model = ExerciseModel;
+    private exerciseRepository: ExerciseRepository;
 
-  // constructor() {}
-
-  public async getExercises(query = {}, filter = {}) {
-    const exercises = await this.Model.find(query, filter);
-    return exercises;
-  }
-
-  public async createExercise(newExercise: Exercise) {
-    const exercise = await this.Model.create(newExercise);
-    return exercise;
-  }
-
-  public async getExercise(id: Types.ObjectId) {
-    const exercise = await this.Model.findById(id);
-    if (!exercise) {
-      throw new Error('Exercise Not Found');
-    }
-    return exercise;
-  }
-
-  public async updateExercise(id: Types.ObjectId, updatedExercise: Exercise) {
-    const exercise = await this.Model.findByIdAndUpdate(
-      id,
-      updatedExercise,
-      { new: true, runValidators: true },
-    );
-
-    if (!exercise) {
-      throw new Error('Exercise Not Found');
+    constructor(
+        @inject(TYPES.Repositories.Exercise) exerciseRepository: ExerciseRepository,
+    ) {
+        this.exerciseRepository = exerciseRepository;
     }
 
-    return exercise;
-  }
-
-  public async deleteExercise(id: Types.ObjectId) {
-    const data = await this.Model.deleteOne({ _id: id });
-
-    if (!data.acknowledged) {
-      throw new Error('Exercise Not Found');
+    public async getExercises(query: FilterQuery<Exercise> = {}) {
+        return this.exerciseRepository.find(query);
     }
 
-    return data;
-  }
+    public async createExercise(newExercise: Exercise) {
+        return this.exerciseRepository.save(newExercise);
+    }
+
+    public async getExercise(id: Types.ObjectId) {
+        return this.exerciseRepository.findById(id);
+    }
+
+    public async updateExercise(id: Types.ObjectId, updatedExercise: Exercise) {
+        await this.exerciseRepository.findOneAndUpdate({ _id: id }, updatedExercise);
+        return this.getExercise(id)
+    }
+
+    public async deleteExercise(id: Types.ObjectId) {
+        return this.exerciseRepository.deleteOne(id);
+    }
 }

@@ -1,108 +1,56 @@
 import { inject, injectable } from 'inversify';
-import bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
 import { Types } from 'mongoose';
-import TYPES from '../constants/types';
+import TYPES from '../constants/ioc.types';
 import UserService from './user.service';
-import { UserRole } from '../models/user.model';
+import WorkoutService from './workout.service';
+import { User } from '../models/user.model';
 
 dotenv.config();
 
 @injectable()
 export default class AccountService {
-  private userService: UserService;
+    private userService: UserService;
 
-  constructor(
-    @inject(TYPES.Services.User) userService: UserService,
-  ) {
-    this.userService = userService;
-  }
+    private workoutService: WorkoutService;
 
-  public async loginAdminUser(username: string, password: string) {
-    const user = await this.userService.getUserByUsername(username.toLowerCase());
-
-    if (user.role !== UserRole.ADMIN) {
-      throw new Error('User Not Permitted');
+    constructor(
+        @inject(TYPES.Services.User) userService: UserService,
+        @inject(TYPES.Services.Workout) workoutService: WorkoutService,
+    ) {
+        this.userService = userService;
+        this.workoutService = workoutService;
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
-
-    if (!validPassword) {
-      throw new Error('Invalid Password');
+    public async getSessionUser(id: Types.ObjectId) {
+        return this.userService.getUser(id);
     }
 
-    const payload = user.toJSON();
-    const token = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 3600 });
-    const refresh = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 86400 });
-
-    const AuthenticationResult = {
-      AccessToken: token,
-      RefreshToken: refresh,
-    };
-
-    return { AuthenticationResult, user: payload };
-  }
-
-  public async loginUser(username: string, password: string) {
-    const user = await this.userService.getUserByUsername(username.toLowerCase());
-    const validPassword = await bcrypt.compare(password, user.password);
-
-    if (!validPassword) {
-      throw new Error('Invalid Password');
-    }
-
-    const payload = user.toJSON();
-    const token = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 3600 });
-    const refresh = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 86400 });
-
-    const AuthenticationResult = {
-      AccessToken: token,
-      RefreshToken: refresh,
-    };
-
-    return { AuthenticationResult, user: payload };
-  }
-
-  public async me(id: Types.ObjectId) {
-    const user = await this.userService.getUser(id);
-    return user;
-  }
-
-  public async refreshToken(data: any) {
-    if (!data.refreshToken) {
-      throw new Error('No Refresh Token');
-    }
-
-    return jwt.verify(
-      data.refreshToken,
-      String(process.env.JWT_SECRET),
-      async (error: any, user: any) => {
-        if (error) {
-          throw new Error('Expired Refresh Token');
-        }
-
-        const payload = await this.userService.getUser(user._id);
-        const token = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 3600 });
-        const refresh = jwt.sign(payload, String(process.env.JWT_SECRET), { expiresIn: 86400 });
-
-        const AuthenticationResult = {
-          AccessToken: token,
-          RefreshToken: refresh,
+    public async updateSessionUser(userId: Types.ObjectId, userData: User) {
+        const user = {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
         };
+        return this.userService.updateUser(userId, user as User);
+    }
 
-        return { AuthenticationResult, user: payload };
-      },
-    );
-  }
+    public async getSessionUserWorkouts(id: Types.ObjectId) {
+        return this.workoutService.getWorkouts({ userId: id });
+    }
 
-  public async registerUser(newUser: any) {
-    const user = {
-      ...newUser,
-      username: newUser.username.toLowerCase(),
-    };
+    // private async updateSessionUser(username: string) {
+    //     const response = await this.userRepository.getModel().findOne({ username });
+    //     if (!response) {
+    //         throw new Error('Invalid username.');
+    //     }
+    //     return response;
+    // }
 
-    await this.userService.createUser(user);
-    return this.loginUser(user.username, user.password);
-  }
+    // private async updateSessionUserPassword(username: string) {
+    //     const response = await this.userRepository.getModel().findOne({ username });
+    //     if (!response) {
+    //         throw new Error('Invalid username.');
+    //     }
+    //     return response;
+    // }
 }
